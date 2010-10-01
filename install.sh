@@ -34,6 +34,12 @@ echo "# Following lines are added by tiny-server-monitor (http://github.com/tuom
 echo "*/5 * * * * $BIN_TARGET/tsm-cpu-stats > /dev/null 2>&1" >> $TMP_FILE
 echo "*/5 * * * * $BIN_TARGET/tsm-mem-stats > /dev/null 2>&1" >> $TMP_FILE
 echo "*/5 * * * * $BIN_TARGET/tsm-http-stats > /dev/null 2>&1" >> $TMP_FILE
+crontab $TMP_FILE
+if [ $? != 0 ]; then
+    echo "Unable to replace crontab from file $TMP_FILE"
+    exit;
+fi
+rm $TMP_FILE
 echo "Added three cronjobs"
 echo "Original crontab file saved as crontab.original"
 echo "---"
