@@ -38,7 +38,9 @@ if [ $? != 0 ]; then
 fi
 chmod a+x $BIN_TARGET/tsm-mem-stats
 chmod a+x $BIN_TARGET/tsm-cpu-stats
-chmod a+x $BIN_TARGET/tsm-http-stats
+chmod a+x $BIN_TARGET/tsm-cpu-stats
+chmod a+x $BIN_TARGET/tsm-build-html
+chmod a+x $BIN_TARGET/tsm-jsonify-log
 if [ $? != 0 ]; then
     echo "Unable to change attributes for binaries in $BIN_TARGET"
     exit;
