@@ -3,6 +3,32 @@
 BIN_TARGET=/usr/local/bin
 LOG_DIR=/var/log/server-stats
 TMP_FILE=tiny-server-monitor-tmp.tmp
+HTTP_ACCESS_LOG=$LOG_DIR/http-requests.log
+case $1 in
+    nginx)
+        # assuing nginx is installed into /etc/nginx/
+        TEST=`grep -C 1 "$HTTP_ACCESS_LOG" /etc/nginx/*`
+        if [[ "$TEST" =~ access_log ]]
+        then
+            echo "Your nginx does write access log into server-stats directory."
+        else
+            echo "Your nginx does not write access log into $LOG_DIR"
+            echo "It is required for http request monitoring"
+            echo "Note that your normal access logs are untouched"
+            echo ""
+            echo "To configure your nginx server, please add this following line next to your normal 'access_log' configuration"
+            echo ""
+            echo "  access_log  $HTTP_ACCESS_LOG"
+            echo ""
+            echo "Note: do not remove anything from nginx configurations, you just need to add this line"
+            exit
+        fi;;
+    *)
+        echo "type 'install.sh nginx' for installing http request monitoring for nginx"
+        exit;;
+esac
+
+exit;
 # install binaries
 echo "Copying binaries..."
 cp bin/* $BIN_TARGET
