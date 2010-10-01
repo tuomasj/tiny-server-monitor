@@ -1,0 +1,7 @@
+#!/bin/sh
+DIR=/var/log/server-stats/cpu-
+FILENAME=`date +%Y-%m`
+OUTPUT=$DIR$FILENAME.log
+TIMESTAMP=`date +%s`
+VALUE=`uptime | awk '{ print substr( $0, index($0, "average:") ) }' | awk '{ print $3; }' | sed 's/,//g'`
+echo "$TIMESTAMP $VALUE" >> $OUTPUT

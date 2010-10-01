@@ -1,0 +1,5 @@
+#!/bin/sh
+OUTPUT=/var/log/server-stats/http-requests-`date +%Y-%m`.log
+TIMESTAMP=`date +%s`
+LINE=`cat /var/log/server-stats/http-requests.log | wc -l && echo "" > /var/log/server-stats/http-requests.log`
+echo "$TIMESTAMP $LINE" >> $OUTPUT
