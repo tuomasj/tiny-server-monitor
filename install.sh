@@ -7,10 +7,11 @@ HTTP_ACCESS_LOG=$LOG_DIR/http-requests.log
 case $1 in
     nginx)
         # assuing nginx is installed into /etc/nginx/
-        TEST=`grep -C 1 "$HTTP_ACCESS_LOG" /etc/nginx/*`
+	
+        TEST=`grep -R "$HTTP_ACCESS_LOG" /etc/nginx/* | head -n 1`
         if [[ "$TEST" =~ access_log ]]
         then
-            echo "Your nginx does write access log into server-stats directory."
+            echo "Your nginx writes access log also into server-stats directory."
         else
             echo "Your nginx does not write access log into $LOG_DIR"
             echo "It is required for http request monitoring"
@@ -18,7 +19,7 @@ case $1 in
             echo ""
             echo "To configure your nginx server, please add this following line next to your normal 'access_log' configuration"
             echo ""
-            echo "  access_log  $HTTP_ACCESS_LOG"
+            echo "  access_log  $HTTP_ACCESS_LOG;"
             echo ""
             echo "Note: do not remove anything from nginx configurations, you just need to add this line"
             exit
@@ -28,7 +29,6 @@ case $1 in
         exit;;
 esac
 
-exit;
 # install binaries
 echo "Copying binaries..."
 cp bin/* $BIN_TARGET
@@ -70,3 +70,4 @@ echo "Added three cronjobs"
 echo "Original crontab file saved as crontab.original"
 echo "---"
 echo "Everything is done"
+echo "Please restart your webserver"
