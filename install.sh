@@ -18,9 +18,15 @@ if [ $? != 0 ]; then
     exit;
 fi
 echo "Binaries copied to $BIN_TARGET"
-
+# create log directory
+mkdir -p $LOG_DIR
+if [ $? != 0 ]; then
+    echo "Unable to create directory $LOG_DIR"
+    exit;
+fi
+chmod a+rx $LOG_DIR
+echo "Directory for server logs created at $LOG_DIR"
 # install crontab
-
 echo "Installing cronjobs..."
 crontab -l > $TMP_FILE
 cp $TMP_FILE crontab.original
@@ -30,3 +36,5 @@ echo "*/5 * * * * $BIN_TARGET/tsm-mem-stats > /dev/null 2>&1" >> $TMP_FILE
 echo "*/5 * * * * $BIN_TARGET/tsm-http-stats > /dev/null 2>&1" >> $TMP_FILE
 echo "Added three cronjobs"
 echo "Original crontab file saved as crontab.original"
+echo "---"
+echo "Everything is done"
