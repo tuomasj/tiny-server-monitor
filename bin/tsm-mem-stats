@@ -1,0 +1,5 @@
+#!/bin/sh
+OUTPUT=/var/log/server-stats/memory-`date +%Y-%m`.log
+TIMESTAMP=`date +%s`
+LINE=`free | grep "Mem:" | awk '{ print $3;}'`
+echo "$TIMESTAMP $LINE" >> $OUTPUT
