@@ -1,0 +1,86 @@
+<html>
+<head>
+    <title>Logs</title>
+    <script language="javascript" type="text/javascript" src="flot/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="flot/jquery.flot.js"></script>
+    <script>
+        var max_date = new Date().getTime();
+        var min_date = max_date - (7*24*60*60*1000);
+        function load_graph(node_name, json_file,max_value)
+        {
+            var options = {
+                xaxis: { mode:"time", timeformat:"%d.%m." ,
+                        minTickSize: [1, "hour"],
+                        min: min_date,
+                        max: max_date
+               },
+               crosshair: { mode: "x" },
+               grid: { hoverable: true, autoHighlight: false }
+            }
+            if(max_value)
+            {
+                options.yaxis = max_value;;
+            }
+            var data = new Array();
+            $( function() {
+                $.getJSON(json_file, function(json) {
+                    var node = $(node_name)
+                    for(row in json) {
+                        data.push( json[row] );
+                    }
+                    $.plot( node, data, options);
+                });
+            });
+        }
+        function print_date(d)
+        {
+            return d.getDate()+'.'+d.getMonth()+'.'+d.getFullYear()+' '+d.getHours()+':'+d.getMinutes();
+        }
+        function set_max_date(d)
+        {
+            max_date = d;
+            min_date = max_date - (7*24*60*60*1000);
+
+            end_date = new Date(max_date);
+            start_date = new Date(min_date);
+
+            $('#range').html( print_date(start_date) + ' - ' + print_date(end_date));
+        }
+
+        $.getJSON('data/common.json', function(json) {
+            set_max_date(json.max_date * 1000);
+            load_graph('#cpu', 'data/cpu.json' );
+            load_graph('#memory', 'data/memory.json', {min:0, max:json.max_memory});
+            load_graph('#http', 'data/http.json', {min:0, max:json.max_memory});
+        });
+    </script>
+    <style>
+        .graph {
+            width: 30%;
+            height: 250px;
+            border: 1px solid gray;
+            float: left;
+        }
+        .plot {
+            width:100%;
+            height: 100%;
+        }
+        
+    </style>
+</head>
+<body>
+    <h2 id="range">range</h1>
+    <div class="graph">
+        CPU%
+        <div class="plot" id="cpu"></div>
+    </div>
+    <div class="graph">
+        Memory
+        <div class="plot" id="memory"></div>
+    </div>
+    <div class="graph">
+        Http Requests
+        <div class="plot" id="http"></div>
+    </div>
+</body>
+</html>
