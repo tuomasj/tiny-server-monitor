@@ -70,10 +70,7 @@ if [ -z "$TEST" ];
 then
 
     echo "# Following lines are added by tiny-server-monitor (http://github.com/tuomasj/tiny-server-monitor)" >> $TMP_FILE
-    echo "*/5 * * * * $BIN_TARGET/tsm-cpu-stats > /dev/null 2>&1" >> $TMP_FILE
-    echo "*/5 * * * * $BIN_TARGET/tsm-mem-stats > /dev/null 2>&1" >> $TMP_FILE
-    echo "*/5 * * * * $BIN_TARGET/tsm-http-stats > /dev/null 2>&1" >> $TMP_FILE
-    echo "*/5 * * * * $BIN_TARGET/tsm-build-html > /dev/null 2>&1" >> $TMP_FILE
+    echo "*/5 * * * * $BIN_TARGET/tsm-run-all > /dev/null 2>&1" >> $TMP_FILE
 
     crontab $TMP_FILE
     if [ $? != 0 ]; then
