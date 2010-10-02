@@ -3,6 +3,7 @@ LOG_DIR=/var/log/server-stats
 HISTORY_LEN=2016 # seconds
 JSONIFY=tsm-jsonify-log
 WWW_DATA=/var/www/server-stats
+COMMON_JSON=$WWW_DATA/common.json
 CPU_OUTPUT=$WWW_DATA/cpu.json
 MEMORY_OUTPUT=$WWW_DATA/memory.json
 HTTP_REQUEST_OUTPUT=$WWW_DATA/http.json
@@ -32,3 +33,9 @@ cat $CPU_INPUT | tail -n $HISTORY_LEN | $JSONIFY > $CPU_OUTPUT
 cat $MEMORY_INPUT | tail -n $HISTORY_LEN | $JSONIFY > $MEMORY_OUTPUT
 # http requests
 cat $HTTP_REQUEST_INPUT | tail -n $HISTORY_LEN | $JSONIFY > $HTTP_REQUEST_OUTPUT
+DATE=`date +%s`
+TOTAL_MEM=`free | grep "Mem:" | awk '{ print $2;}'`
+echo "{" > $COMMON_JSON
+echo "  max_date: $DATE," >> $COMMON_JSON
+echo "  max_memory: $TOTAL_MEM" >> $COMMON_JSON
+echo "}" >> $COMMON_JSON
