@@ -1,0 +1,34 @@
+#!/bin/bash
+LOG_DIR=/var/log/server-stats
+HISTORY_LEN=2016 # seconds
+JSONIFY=tsm-jsonify-log
+WWW_DATA=/var/www/server-stats
+CPU_OUTPUT=$WWW_DATA/cpu.json
+MEMORY_OUTPUT=$WWW_DATA/memory.json
+HTTP_REQUEST_OUTPUT=$WWW_DATA/http.json
+NOW=`date +%Y-%m`
+LAST=`date --date="last month" +%Y-%m`
+if [ -f $LOG_DIR/cpu-$LAST.log ];
+then
+    CPU_INPUT="$LOG_DIR/cpu-$NOW.log $LOG_DIR/cpu-$LAST.log"
+else
+    CPU_INPUT="$LOG_DIR/cpu-$NOW.log"
+fi	
+if [ -f $LOG_DIR/memory-$LAST.log ];
+then
+    MEMORY_INPUT="$LOG_DIR/memory-$NOW.log $LOG_DIR/memory-$LAST.log"
+else
+    MEMORY_INPUT="$LOG_DIR/memory-$NOW.log"
+fi
+if [ -f $LOG_DIR/http-requests--$LAST.log ];
+then
+    HTTP_REQUEST_INPUT="$LOG_DIR/http-requests-$NOW.log $LOG_DIR/http-requests-$LAST.log"
+else
+    HTTP_REQUEST_INPUT="$LOG_DIR/http-requests-$NOW.log"
+fi
+# cpu
+cat $CPU_INPUT | tail -n $HISTORY_LEN | $JSONIFY > $CPU_OUTPUT
+# memory
+cat $MEMORY_INPUT | tail -n $HISTORY_LEN | $JSONIFY > $MEMORY_OUTPUT
+# http requests
+cat $HTTP_REQUEST_INPUT | tail -n $HISTORY_LEN | $JSONIFY > $HTTP_REQUEST_OUTPUT

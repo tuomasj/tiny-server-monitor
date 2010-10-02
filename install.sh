@@ -36,6 +36,7 @@ if [ $? != 0 ]; then
     echo "Unable to copy binaries to $BIN_TARGET"
     exit;
 fi
+
 chmod a+x $BIN_TARGET/tsm-mem-stats
 chmod a+x $BIN_TARGET/tsm-cpu-stats
 chmod a+x $BIN_TARGET/tsm-cpu-stats
@@ -54,22 +55,37 @@ if [ $? != 0 ]; then
 fi
 chmod a+rx $LOG_DIR
 echo "Directory for server logs created at $LOG_DIR"
+
+# creating directory for html-statistics
+mkdir -p /var/www/server-stats
+chmod a+rx /var/www/server-stats
+echo "Directory for json data files created at /var/www/server-stats"
+
 # install crontab
 echo "Installing cronjobs..."
 crontab -l > $TMP_FILE
 cp $TMP_FILE crontab.original
-echo "# Following lines are added by tiny-server-monitor (http://github.com/tuomasj/tiny-server-monitor)" >> $TMP_FILE
-echo "*/5 * * * * $BIN_TARGET/tsm-cpu-stats > /dev/null 2>&1" >> $TMP_FILE
-echo "*/5 * * * * $BIN_TARGET/tsm-mem-stats > /dev/null 2>&1" >> $TMP_FILE
-echo "*/5 * * * * $BIN_TARGET/tsm-http-stats > /dev/null 2>&1" >> $TMP_FILE
-crontab $TMP_FILE
-if [ $? != 0 ]; then
-    echo "Unable to replace crontab from file $TMP_FILE"
-    exit;
+TEST=`grep "/usr/local/bin/tsm-" $TMP_FILE`
+if [ -z "$TEST" ];
+then
+
+    echo "# Following lines are added by tiny-server-monitor (http://github.com/tuomasj/tiny-server-monitor)" >> $TMP_FILE
+    echo "*/5 * * * * $BIN_TARGET/tsm-cpu-stats > /dev/null 2>&1" >> $TMP_FILE
+    echo "*/5 * * * * $BIN_TARGET/tsm-mem-stats > /dev/null 2>&1" >> $TMP_FILE
+    echo "*/5 * * * * $BIN_TARGET/tsm-http-stats > /dev/null 2>&1" >> $TMP_FILE
+    echo "*/5 * * * * $BIN_TARGET/tsm-build-html > /dev/null 2>&1" >> $TMP_FILE
+
+    crontab $TMP_FILE
+    if [ $? != 0 ]; then
+        echo "Unable to replace crontab from file $TMP_FILE"
+        exit;
+    fi
+    rm $TMP_FILE
+    echo "Added four cronjobs"
+    echo "Original crontab file saved as crontab.original"
+else
+    echo "Crontab already has jobs."
 fi
-rm $TMP_FILE
-echo "Added three cronjobs"
-echo "Original crontab file saved as crontab.original"
 echo "---"
-echo "Everything is done"
-echo "Please restart your webserver"
+echo "Everything is done and data is being collected every 5 minutes."
+echo "Please restart your webserver to apply the changes."
