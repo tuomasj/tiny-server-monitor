@@ -1,0 +1,7 @@
+#!/bin/bash
+ROOT=/usr/local/bin
+$ROOT/tsm-cpu-stats
+$ROOT/tsm-memory-stats
+$ROOT/tsm-http-stats
+$ROOT/tsm-build-html
+
