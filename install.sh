@@ -42,6 +42,7 @@ chmod a+x $BIN_TARGET/tsm-cpu-stats
 chmod a+x $BIN_TARGET/tsm-cpu-stats
 chmod a+x $BIN_TARGET/tsm-build-html
 chmod a+x $BIN_TARGET/tsm-jsonify-log
+chmod a+x $BIN_TARGET/tsm-run-all
 if [ $? != 0 ]; then
     echo "Unable to change attributes for binaries in $BIN_TARGET"
     exit;
